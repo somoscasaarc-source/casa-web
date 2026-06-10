@@ -1,101 +1,183 @@
-import Image from "next/image";
+import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Reveal from "@/components/Reveal";
+import PackageCard from "@/components/PackageCard";
+import EditorialGallery from "@/components/EditorialGallery";
+import { GALLERY, PACKAGES, SITE, TESTIMONIALS } from "@/lib/site";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      <Header />
+      <main>
+        {/* Hero — wordmark composition, no full-bleed image */}
+        <section className="hero hero--noimg">
+          <div className="hero-content">
+            <div className="hero-inner">
+              <div className="label hero-eyebrow">{SITE.city}</div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+              <h1 className="wordmark hero-mark">CASA</h1>
+
+              <div className="rule hero-rule" />
+
+              <p className="serif-italic hero-tag">{SITE.tagline}</p>
+
+              <p className="hero-disc">Fotografía · Video · Bodas · Quinceañeras</p>
+
+              <div className="hero-actions">
+                <Link href="/bodas" className="btn btn-dark">Ver bodas</Link>
+                <Link href="/contacto" className="btn btn-siena">Reservar fecha</Link>
+              </div>
+            </div>
+
+            <div className="hero-scroll">
+              <span className="label">Scroll</span>
+              <span className="hero-scroll-line" aria-hidden />
+            </div>
+          </div>
+        </section>
+
+        {/* Qué hacemos */}
+        <section className="about--text">
+          <div className="wrap" style={{ display: "flex" }}>
+            <Reveal className="about-inner">
+              <div className="label">Qué hacemos</div>
+              <h2 className="serif about-title">
+                Bodas y quinces, contadas como se viven.
+              </h2>
+              <p className="body about-body">
+                Somos un estudio audiovisual chico, con base en Villa Crespo.
+                Filmamos y fotografiamos bodas y quinceañeras con un enfoque
+                editorial y documental. Cuidamos la luz, los gestos y el ritmo.
+                Lo demás —si te divertís, si bailás, si llorás— ya lo trae el día.
+              </p>
+              <Link href="/nosotros" className="link-arrow">
+                Conocenos <span className="arr">→</span>
+              </Link>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Editorial gallery */}
+        <section className="section" style={{ paddingTop: 0 }}>
+          <div className="wrap">
+            <Reveal>
+              <div className="label" style={{ marginBottom: 18 }}>
+                Trabajos recientes
+              </div>
+              <h2
+                className="serif pf-prev-title"
+                style={{ color: "var(--ebano)", marginBottom: 80 }}
+              >
+                Una historia por contar.
+              </h2>
+            </Reveal>
+            <Reveal>
+              <EditorialGallery photos={GALLERY} />
+            </Reveal>
+            <Reveal className="center">
+              <Link
+                href="/bodas"
+                className="link-arrow"
+                style={{ color: "var(--siena)" }}
+              >
+                Ver más trabajos <span className="arr">→</span>
+              </Link>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Paquetes */}
+        <section className="section svc-brief">
+          <div className="wrap">
+            <div className="svc-brief-head">
+              <Reveal>
+                <div className="label">Servicios</div>
+              </Reveal>
+              <Reveal delay={80}>
+                <h2 className="serif svc-brief-title">
+                  Tres formas de trabajar juntos.
+                </h2>
+              </Reveal>
+            </div>
+
+            <div className="pk-grid">
+              {PACKAGES.map((p, i) => (
+                <Reveal key={p.id} delay={i * 90}>
+                  <PackageCard
+                    pkg={{
+                      ...p,
+                      features: (p.homeFeatures ?? p.features).slice(0, 4),
+                    }}
+                  />
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* A medida */}
+        <section className="section sv-custom">
+          <div className="wrap">
+            <Reveal className="sv-custom-inner">
+              <div className="label">A medida</div>
+              <h2 className="serif sv-custom-title">Cada historia es distinta.</h2>
+              <p className="body sv-custom-body">
+                Además de nuestros paquetes, podés armar tu propia experiencia a
+                medida. Sumamos servicios sueltos —una sesión de pareja, un
+                getting ready, drone, un álbum impreso— y armamos la cobertura
+                exacta que tu boda o tu quince necesita. Contanos qué te imaginás.
+              </p>
+              <div className="sv-custom-actions">
+                <Link href="/contacto" className="btn btn-dark">
+                  Armemos tu paquete
+                </Link>
+                <a
+                  className="link-arrow"
+                  href={SITE.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Hablemos por WhatsApp <span className="arr">→</span>
+                </a>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Testimonial */}
+        <section className="quote">
+          <div className="wrap">
+            <div className="quote-inner">
+              <span className="quote-mark serif">&ldquo;</span>
+              <Reveal>
+                <p className="serif-italic quote-text">
+                  {TESTIMONIALS[0].quote}
+                </p>
+                <p className="quote-attr">— {TESTIMONIALS[0].attr}</p>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA final */}
+        <section className="section cta-final center">
+          <div className="wrap">
+            <Reveal>
+              <h2 className="serif cta-title">¿Tenés fecha?</h2>
+              <p className="cta-sub">
+                Recibimos consultas para 2026 y 2027.
+              </p>
+              <Link href="/contacto" className="btn btn-dark cta-btn">
+                Reservar mi fecha
+              </Link>
+            </Reveal>
+          </div>
+        </section>
+
+        <Footer />
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    </>
   );
 }
