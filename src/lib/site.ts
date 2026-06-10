@@ -72,7 +72,7 @@ export const PACKAGES: Pkg[] = [
     blurb:
       "La experiencia completa. Cada momento registrado, cada detalle cuidado.",
     features: [
-      "3 Filmmakers · 3 Fotógrafos",
+      "2 Filmmakers · 2 Fotógrafos",
       "Cobertura integral · todo el evento",
       "Drone + edición en vivo",
       "Galería completa de fotos editadas",
@@ -80,7 +80,7 @@ export const PACKAGES: Pkg[] = [
       "Álbum fine-art impreso",
     ],
     homeFeatures: [
-      "3 Filmmakers · 3 Fotógrafos",
+      "2 Filmmakers · 2 Fotógrafos",
       "Cobertura integral · todo el evento",
       "Drone + edición en vivo",
       "La experiencia completa",
