@@ -1,30 +1,14 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  style: ["normal", "italic"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-dm-sans",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "CASA — Estudio Audiovisual · Villa Crespo",
   description:
-    "CASA es un estudio audiovisual de Villa Crespo, Buenos Aires. Fotografía y video para bodas y quinceañeras. Sentite en casa.",
-  metadataBase: new URL("https://somoscasa.com.ar"),
+    "CASA es un estudio audiovisual de Villa Crespo, Buenos Aires. Fotografía y video para bodas. Sentite en casa.",
+  metadataBase: new URL("https://casa-web-chi.vercel.app"),
   openGraph: {
     title: "CASA — Estudio Audiovisual",
-    description: "Fotografía y video para bodas y quinceañeras en Buenos Aires.",
+    description: "Fotografía y video para bodas en Buenos Aires.",
     locale: "es_AR",
     type: "website",
   },
@@ -36,7 +20,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${cormorant.variable} ${dmSans.variable}`}>
+    <html lang="es">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

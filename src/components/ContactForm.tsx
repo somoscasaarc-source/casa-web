@@ -112,7 +112,6 @@ export default function ContactForm() {
           >
             <option value="" disabled>Elegí una opción</option>
             <option>Boda</option>
-            <option>Quinceañera</option>
             <option>Otro</option>
           </select>
           <span className="cf-select-chev" aria-hidden>▾</span>

@@ -14,9 +14,10 @@ export const SITE = {
 } as const;
 
 export const NAV = [
+  { href: "/portfolio", label: "PORTFOLIO" },
+  { href: "/servicios", label: "SERVICIOS" },
   { href: "/bodas", label: "BODAS" },
-  { href: "/quinces", label: "QUINCES" },
-  { href: "/nosotros", label: "NOSOTROS" },
+  { href: "/nosotros", label: "ABOUT" },
   { href: "/contacto", label: "CONTACTO" },
 ] as const;
 
@@ -87,15 +88,12 @@ export const PACKAGES: Pkg[] = [
   },
 ];
 
-// Warm, golden-hour stock from Unsplash CDN
 function u(id: string, w: number, h: number) {
   return `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`;
 }
 
 export const IMG = {
   heroBodas: u("1519741497674-611481863552", 1400, 900),
-  heroQuinces: u("1583939003579-730e3918a45a", 1400, 900),
-  samuel: u("1500648767791-00dcc994a43e", 1200, 1500),
 };
 
 type GalleryPhoto = { src: string; alt: string; ratio: "tall" | "wide" | "sq" };
@@ -109,13 +107,26 @@ export const GALLERY: GalleryPhoto[] = [
   { src: u("1537633552985-df8429e8048b", 800, 1180), alt: "Última hora · fiesta", ratio: "tall" },
 ];
 
-export const GALLERY_QUINCES: GalleryPhoto[] = [
-  { src: u("1583939003579-730e3918a45a", 800, 1180), alt: "Mía · quince · hora dorada", ratio: "tall" },
-  { src: u("1519225421980-715cb0215aed", 900, 900), alt: "Valentina · jardín", ratio: "sq" },
-  { src: u("1525258946800-98cfd641d0de", 1200, 800), alt: "Sesión · jardín", ratio: "wide" },
-  { src: u("1606800052052-a08af7148866", 800, 1180), alt: "Retrato editorial", ratio: "tall" },
-  { src: u("1522673607200-164d1b6ce486", 900, 900), alt: "Detalle · ramo", ratio: "sq" },
-  { src: u("1591604466107-ec97de577aff", 800, 1180), alt: "Última luz", ratio: "tall" },
+type PortfolioItem = {
+  id: string;
+  title: string;
+  sub: string;
+  src: string;
+};
+
+export const PORTFOLIO: PortfolioItem[] = [
+  { id: "p01", title: "Catalina & Tomás", sub: "Boda · Palermo", src: u("1519741497674-611481863552", 900, 1240) },
+  { id: "p02", title: "El sí", sub: "Detalle · Anillos", src: u("1606216794074-735e91aa2c92", 900, 900) },
+  { id: "p03", title: "Primera luz", sub: "Getting ready", src: u("1465495976277-4387d4b0b4c6", 1200, 800) },
+  { id: "p04", title: "Civil", sub: "Villa Crespo", src: u("1511285560929-80b456fea0bc", 900, 1240) },
+  { id: "p05", title: "El brindis", sub: "Recepción", src: u("1530103862676-de8c9debad1d", 900, 900) },
+  { id: "p06", title: "Última hora", sub: "Fiesta · Boda", src: u("1537633552985-df8429e8048b", 900, 1240) },
+  { id: "p07", title: "Lucía & Mateo", sub: "Boda · Tigre", src: u("1525258946800-98cfd641d0de", 1200, 800) },
+  { id: "p08", title: "El abrazo", sub: "Ceremonia", src: u("1460978812857-470ed1c77af0", 900, 1240) },
+  { id: "p09", title: "Detalle", sub: "Velas y mesa", src: u("1522673607200-164d1b6ce486", 900, 900) },
+  { id: "p10", title: "Hora dorada", sub: "Retrato pareja", src: u("1469371670807-013ccf25f16a", 900, 1240) },
+  { id: "p11", title: "Después", sub: "Cierre · Madrugada", src: u("1453394221061-0e26a4e4406b", 1200, 800) },
+  { id: "p12", title: "Sofía & Bruno", sub: "Boda · San Isidro", src: u("1591604466107-ec97de577aff", 900, 1240) },
 ];
 
 export const TESTIMONIALS = [
@@ -123,11 +134,6 @@ export const TESTIMONIALS = [
     quote:
       "No sentimos que había un fotógrafo. Sentimos que había alguien más disfrutando con nosotros.",
     attr: "Catalina y Tomás · Boda 2024",
-  },
-  {
-    quote:
-      "Las fotos no son lo que pasó. Son lo que se sintió. Es muy difícil explicarlo, pero está todo ahí.",
-    attr: "Mía y familia · Quince 2024",
   },
 ];
 
@@ -155,29 +161,6 @@ export const FAQ_BODAS = [
   {
     q: "¿Imprimen álbumes?",
     a: "Sí. El paquete Premium ya incluye uno. En los otros paquetes lo sumás como adicional. Hacemos álbumes fine-art impresos en papeles seleccionados.",
-  },
-];
-
-export const FAQ_QUINCES = [
-  {
-    q: "¿Qué momentos cubren en un quince?",
-    a: "Desde el getting ready hasta el cierre de la fiesta. Si querés sumamos una sesión previa o un día anterior, lo armamos a tu medida.",
-  },
-  {
-    q: "¿Hacen también la sesión preliminar?",
-    a: "Sí. Es una sesión aparte, en exteriores o en estudio, con tiempo para probar looks y entrarte en clima.",
-  },
-  {
-    q: "¿Cómo se reserva?",
-    a: "Igual que las bodas: contrato y seña del 40%. Mientras antes mejor, porque los fines de semana se ocupan rápido.",
-  },
-  {
-    q: "¿Entregan video?",
-    a: "Todos los paquetes incluyen video. El largo y formato varía según el paquete. Hablamos antes de qué te gustaría ver.",
-  },
-  {
-    q: "¿Y si quiero algo distinto a los paquetes?",
-    a: "Lo armamos. Cada quince es distinto y nuestra forma de trabajar también puede serlo.",
   },
 ];
 

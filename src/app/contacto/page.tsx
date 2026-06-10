@@ -5,7 +5,7 @@ import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contacto — CASA",
-  description: "Escribinos para consultar tu fecha. Bodas y quinces.",
+  description: "Escribinos para consultar tu fecha.",
 };
 
 export default function ContactoPage() {

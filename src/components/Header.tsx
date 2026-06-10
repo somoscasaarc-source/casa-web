@@ -40,8 +40,8 @@ export default function Header() {
           ))}
         </nav>
 
-        <Link href="/contacto" className="hdr-client btn btn-outline">
-          RESERVAR FECHA
+        <Link href="/clientes" className="hdr-client btn btn-outline">
+          ÁREA DE CLIENTES
         </Link>
 
         <button
@@ -63,11 +63,11 @@ export default function Header() {
           </Link>
         ))}
         <Link
-          href="/contacto"
+          href="/clientes"
           className="btn btn-outline"
           style={{ marginTop: 24 }}
         >
-          RESERVAR FECHA
+          ÁREA DE CLIENTES
         </Link>
       </div>
     </header>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
-import { IMG, PILARES, SITE } from "@/lib/site";
+import { PILARES, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Nosotros — CASA",
@@ -25,55 +25,43 @@ export default function NosotrosPage() {
           </div>
         </section>
 
-        {/* About — split */}
         <section className="section" style={{ paddingTop: 0 }}>
           <div className="wrap">
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "5fr 6fr",
-                gap: 60,
-                alignItems: "start",
-              }}
-              className="nos-split"
-            >
-              <Reveal>
-                <div className="photo" style={{ aspectRatio: "4 / 5" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={IMG.samuel} alt="Samuel trabajando" loading="lazy" />
-                </div>
-              </Reveal>
-              <Reveal delay={120}>
-                <div style={{ paddingTop: 40 }}>
-                  <div className="label">Samuel Gutiérrez</div>
-                  <h2
-                    className="serif"
-                    style={{
-                      fontSize: 44,
-                      lineHeight: 1.05,
-                      margin: "16px 0 28px",
-                    }}
-                  >
-                    Soy filmmaker y fotógrafo. Trabajo desde Villa Crespo.
-                  </h2>
-                  <p className="body" style={{ color: "var(--ceniza)", marginBottom: 20 }}>
-                    CASA nació para registrar bodas y quinces como
-                    se viven, no como se posan. Equipos chicos, atención completa,
-                    y un trato que no se siente profesional —se siente cercano.
-                  </p>
-                  <p className="body" style={{ color: "var(--ceniza)" }}>
-                    Antes de empezar a disparar, charlamos. Conocer a la familia,
-                    la pareja, los gestos chicos: eso es lo que después se ve en
-                    el material. Lo demás es oficio.
-                  </p>
-                </div>
-              </Reveal>
-            </div>
+            <Reveal>
+              <div style={{ maxWidth: 760 }}>
+                <div className="label">Samuel Gutiérrez</div>
+                <h2
+                  className="serif"
+                  style={{
+                    fontSize: 44,
+                    lineHeight: 1.05,
+                    margin: "16px 0 28px",
+                  }}
+                >
+                  Soy filmmaker y fotógrafo. Trabajo desde Villa Crespo.
+                </h2>
+                <p
+                  className="body"
+                  style={{ color: "var(--ceniza)", marginBottom: 20 }}
+                >
+                  CASA nació para registrar bodas como se viven, no como se
+                  posan. Equipos chicos, atención completa, y un trato que no se
+                  siente profesional — se siente cercano.
+                </p>
+                <p className="body" style={{ color: "var(--ceniza)" }}>
+                  Antes de empezar a disparar, charlamos. Conocer a la familia,
+                  la pareja, los gestos chicos: eso es lo que después se ve en
+                  el material. Lo demás es oficio.
+                </p>
+              </div>
+            </Reveal>
           </div>
         </section>
 
-        {/* Pilares */}
-        <section className="section" style={{ background: "var(--pergamino)", paddingTop: 0 }}>
+        <section
+          className="section"
+          style={{ background: "var(--pergamino)", paddingTop: 0 }}
+        >
           <div className="wrap">
             <Reveal>
               <div className="label">Filosofía</div>
@@ -105,17 +93,28 @@ export default function NosotrosPage() {
                   <div>
                     <div
                       className="serif"
-                      style={{ fontSize: 52, color: "var(--siena)", lineHeight: 1 }}
+                      style={{
+                        fontSize: 52,
+                        color: "var(--siena)",
+                        lineHeight: 1,
+                      }}
                     >
                       {p.n}
                     </div>
                     <h3
                       className="serif"
-                      style={{ fontSize: 26, margin: "20px 0 16px", lineHeight: 1.2 }}
+                      style={{
+                        fontSize: 26,
+                        margin: "20px 0 16px",
+                        lineHeight: 1.2,
+                      }}
                     >
                       {p.title}
                     </h3>
-                    <p className="body" style={{ color: "var(--ceniza)", fontSize: 15 }}>
+                    <p
+                      className="body"
+                      style={{ color: "var(--ceniza)", fontSize: 15 }}
+                    >
                       {p.body}
                     </p>
                   </div>
@@ -125,7 +124,6 @@ export default function NosotrosPage() {
           </div>
         </section>
 
-        {/* CTA */}
         <section className="section cta-final center">
           <div className="wrap">
             <Reveal>

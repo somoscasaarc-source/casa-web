@@ -23,10 +23,10 @@ export default function HomePage() {
 
               <p className="serif-italic hero-tag">{SITE.tagline}</p>
 
-              <p className="hero-disc">Fotografía · Video · Bodas · Quinceañeras</p>
+              <p className="hero-disc">Fotografía · Video · Bodas</p>
 
               <div className="hero-actions">
-                <Link href="/bodas" className="btn btn-dark">Ver bodas</Link>
+                <Link href="/portfolio" className="btn btn-dark">Ver portfolio</Link>
                 <Link href="/contacto" className="btn btn-siena">Reservar fecha</Link>
               </div>
             </div>
@@ -44,13 +44,13 @@ export default function HomePage() {
             <Reveal className="about-inner">
               <div className="label">Qué hacemos</div>
               <h2 className="serif about-title">
-                Bodas y quinces, contadas como se viven.
+                Bodas, contadas como se viven.
               </h2>
               <p className="body about-body">
                 Somos un estudio audiovisual chico, con base en Villa Crespo.
-                Filmamos y fotografiamos bodas y quinceañeras con un enfoque
-                editorial y documental. Cuidamos la luz, los gestos y el ritmo.
-                Lo demás —si te divertís, si bailás, si llorás— ya lo trae el día.
+                Filmamos y fotografiamos bodas con un enfoque editorial y
+                documental. Cuidamos la luz, los gestos y el ritmo. Lo demás
+                —si te divertís, si bailás, si llorás— ya lo trae el día.
               </p>
               <Link href="/nosotros" className="link-arrow">
                 Conocenos <span className="arr">→</span>
@@ -78,7 +78,7 @@ export default function HomePage() {
             </Reveal>
             <Reveal className="center">
               <Link
-                href="/bodas"
+                href="/portfolio"
                 className="link-arrow"
                 style={{ color: "var(--siena)" }}
               >
@@ -127,7 +127,7 @@ export default function HomePage() {
                 Además de nuestros paquetes, podés armar tu propia experiencia a
                 medida. Sumamos servicios sueltos —una sesión de pareja, un
                 getting ready, drone, un álbum impreso— y armamos la cobertura
-                exacta que tu boda o tu quince necesita. Contanos qué te imaginás.
+                exacta que tu boda necesita. Contanos qué te imaginás.
               </p>
               <div className="sv-custom-actions">
                 <Link href="/contacto" className="btn btn-dark">

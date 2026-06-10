@@ -13,10 +13,12 @@ export default function Footer() {
         <nav className="ft-cols">
           <div className="ft-col">
             <div className="label ft-h">Estudio</div>
+            <Link href="/portfolio" className="ft-link">Portfolio</Link>
+            <Link href="/servicios" className="ft-link">Servicios</Link>
             <Link href="/bodas" className="ft-link">Bodas</Link>
-            <Link href="/quinces" className="ft-link">Quinces</Link>
-            <Link href="/nosotros" className="ft-link">Nosotros</Link>
+            <Link href="/nosotros" className="ft-link">About</Link>
             <Link href="/contacto" className="ft-link">Contacto</Link>
+            <Link href="/clientes" className="ft-link">Área de clientes</Link>
           </div>
           <div className="ft-col">
             <div className="label ft-h">Contacto</div>
