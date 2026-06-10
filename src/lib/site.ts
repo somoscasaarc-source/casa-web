@@ -9,8 +9,8 @@ export const SITE = {
   whatsappRaw: "+54 9 11 3929-5625",
   instagram:
     process.env.NEXT_PUBLIC_INSTAGRAM_URL ??
-    "https://instagram.com/somos.casa.ar",
-  instagramHandle: "@somos.casa.ar",
+    "https://www.instagram.com/somos.casa.ok/",
+  instagramHandle: "@somos.casa.ok",
 } as const;
 
 export const NAV = [
