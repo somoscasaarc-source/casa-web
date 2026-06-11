@@ -1,0 +1,63 @@
+import { NextResponse } from "next/server";
+import { getPayment, mercadopagoConfigured } from "@/lib/mercadopago";
+import {
+  getServiceSupabase,
+  supabaseConfigured,
+} from "@/lib/supabase/server";
+
+export async function POST(req: Request) {
+  if (!mercadopagoConfigured() || !supabaseConfigured()) {
+    return NextResponse.json({ ok: false, reason: "not_configured" });
+  }
+  const url = new URL(req.url);
+  const type = url.searchParams.get("type") ?? url.searchParams.get("topic");
+  const id =
+    url.searchParams.get("data.id") ??
+    url.searchParams.get("id") ??
+    (await req.json().catch(() => ({})))?.data?.id;
+
+  if (type !== "payment" || !id) {
+    return NextResponse.json({ ok: true, skipped: true });
+  }
+
+  try {
+    const payment = await getPayment(String(id));
+    const bookingId = payment.external_reference;
+    if (!bookingId) return NextResponse.json({ ok: true, no_ref: true });
+
+    const svc = getServiceSupabase();
+    await svc
+      .from("bookings")
+      .update({
+        payment_id: String(payment.id),
+        payment_status: payment.status,
+      })
+      .eq("id", bookingId);
+
+    if (payment.status === "approved") {
+      // mark event as deposit_paid
+      const { data: b } = await svc
+        .from("bookings")
+        .select("event_id")
+        .eq("id", bookingId)
+        .single();
+      if (b?.event_id) {
+        await svc
+          .from("events")
+          .update({ status: "señado", deposit_paid: true })
+          .eq("id", b.event_id);
+      }
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    return NextResponse.json(
+      { ok: false, error: e instanceof Error ? e.message : "webhook_error" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function GET() {
+  return NextResponse.json({ ok: true });
+}

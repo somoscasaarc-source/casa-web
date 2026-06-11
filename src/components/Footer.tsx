@@ -29,7 +29,9 @@ export default function Footer() {
             <span className="ft-link ft-static">{SITE.city}</span>
           </div>
           <div className="ft-col">
-            <div className="label ft-h">Seguinos</div>
+            <div className="label ft-h">Más</div>
+            <Link href="/reservar" className="ft-link">Reservar fecha</Link>
+            <Link href="/tienda" className="ft-link">Tienda</Link>
             <a className="ft-link" href={SITE.instagram} target="_blank" rel="noopener noreferrer">
               Instagram · {SITE.instagramHandle}
             </a>

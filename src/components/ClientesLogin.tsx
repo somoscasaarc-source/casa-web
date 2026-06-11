@@ -2,27 +2,52 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ClientesLogin() {
+  const router = useRouter();
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [shake, setShake] = useState(false);
+  const [busy, setBusy] = useState(false);
 
-  const submit = (e: FormEvent) => {
+  const fail = (msg: string) => {
+    setError(msg);
+    setShake(true);
+    setTimeout(() => setShake(false), 500);
+  };
+
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     const c = code.trim();
     if (!c) {
-      setError("Ingresá el código que te enviamos.");
-      setShake(true);
-      setTimeout(() => setShake(false), 500);
+      fail("Ingresá el código que te enviamos.");
       return;
     }
-    // Phase 2: route to /clientes/[token]. For now we show a friendly notice.
-    setError(
-      "Las galerías privadas se habilitan próximamente. Mientras tanto, escribinos y te las enviamos por mail.",
-    );
-    setShake(true);
-    setTimeout(() => setShake(false), 500);
+    setBusy(true);
+    try {
+      const res = await fetch(
+        `/api/clientes/check?token=${encodeURIComponent(c)}`,
+        { cache: "no-store" },
+      );
+      if (res.status === 503) {
+        fail(
+          "Las galerías privadas se habilitan próximamente. Escribinos y te las enviamos por mail.",
+        );
+        return;
+      }
+      if (res.status === 404) {
+        fail("Ese código no existe o ya no está activo.");
+        return;
+      }
+      if (!res.ok) {
+        fail("No pudimos verificar el código. Probá de nuevo.");
+        return;
+      }
+      router.push(`/clientes/${encodeURIComponent(c)}`);
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -51,8 +76,12 @@ export default function ClientesLogin() {
             autoFocus
           />
           {error && <span className="cl-err">{error}</span>}
-          <button type="submit" className="btn btn-dark cl-submit">
-            Entrar
+          <button
+            type="submit"
+            className="btn btn-dark cl-submit"
+            disabled={busy}
+          >
+            {busy ? "Verificando…" : "Entrar"}
           </button>
         </form>
 
