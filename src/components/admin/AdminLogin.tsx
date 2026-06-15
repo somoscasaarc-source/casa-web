@@ -10,6 +10,11 @@ export default function AdminLogin() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const urlError =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("error")
+      : null;
+
   if (!browserSupabaseConfigured()) {
     return (
       <main className="cl-login">
@@ -37,7 +42,7 @@ export default function AdminLogin() {
         options: {
           emailRedirectTo:
             typeof window !== "undefined"
-              ? `${window.location.origin}/admin`
+              ? `${window.location.origin}/auth/callback?next=/admin`
               : undefined,
         },
       });
@@ -66,7 +71,7 @@ export default function AdminLogin() {
         {!sent && (
           <form className="cl-form" onSubmit={submit} noValidate>
             <input
-              className={`cl-input ${error ? "cl-input-err" : ""}`}
+              className={`cl-input ${error || urlError ? "cl-input-err" : ""}`}
               type="email"
               placeholder="TU EMAIL"
               value={email}
@@ -77,7 +82,11 @@ export default function AdminLogin() {
               required
               autoFocus
             />
-            {error && <span className="cl-err">{error}</span>}
+            {(error || urlError) && (
+              <span className="cl-err">
+                {error ?? `El link expiró o ya se usó: ${urlError}. Pedí uno nuevo.`}
+              </span>
+            )}
             <button
               type="submit"
               className="btn btn-dark cl-submit"
