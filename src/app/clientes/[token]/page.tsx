@@ -1,14 +1,13 @@
 import { notFound } from "next/navigation";
 import { getServiceSupabase, supabaseConfigured } from "@/lib/supabase/server";
-import ClientGallery, { type PhotoWithUrl } from "@/components/clientes/ClientGallery";
+import ClientGallery, {
+  type PhotoWithUrl,
+  type GalleryCollection,
+} from "@/components/clientes/ClientGallery";
 
 type Params = { token: string };
 
-export default async function ClientGalleryPage({
-  params,
-}: {
-  params: Params;
-}) {
+export default async function ClientGalleryPage({ params }: { params: Params }) {
   if (!supabaseConfigured()) {
     return (
       <main className="cl-login">
@@ -24,20 +23,26 @@ export default async function ClientGalleryPage({
   }
 
   const svc = getServiceSupabase();
-  const { data: gallery } = await svc
+
+  const { data: rawGallery } = await svc
     .from("galleries")
     .select(
-      `id, title, is_active, created_at,
+      `id, title, is_active, expires_at, download_permission, watermark_enabled,
        clients ( name, email ),
        events ( date, type ),
-       photos ( id, storage_path, original_filename, sort_order )`,
+       photos ( id, storage_path, original_filename, sort_order, collection_id ),
+       collections ( id, name, sort_order )`
     )
     .eq("access_token", params.token)
     .single();
 
-  const g = gallery as unknown as {
+  const gallery = rawGallery as unknown as {
+    id: string;
     is_active: boolean;
+    expires_at: string | null;
     title: string | null;
+    download_permission: "none" | "web" | "original";
+    watermark_enabled: boolean;
     clients: { name: string | null; email: string } | null;
     events: { date: string | null; type: string | null } | null;
     photos: {
@@ -45,12 +50,17 @@ export default async function ClientGalleryPage({
       storage_path: string;
       original_filename: string | null;
       sort_order: number;
+      collection_id: string | null;
     }[];
+    collections: { id: string; name: string; sort_order: number }[];
   } | null;
 
-  if (!g || !g.is_active) notFound();
+  if (!gallery || !gallery.is_active) notFound();
 
-  const rawPhotos = g.photos ?? [];
+  // Check expiry server-side
+  if (gallery.expires_at && new Date(gallery.expires_at) < new Date()) notFound();
+
+  const rawPhotos = gallery.photos ?? [];
   const sorted = [...rawPhotos].sort((a, b) => a.sort_order - b.sort_order);
 
   const photos: PhotoWithUrl[] = await Promise.all(
@@ -62,20 +72,29 @@ export default async function ClientGalleryPage({
         id: p.id,
         url: data?.signedUrl ?? "",
         original_filename: p.original_filename,
+        collection_id: p.collection_id,
       };
-    }),
+    })
   );
 
-  const client = g.clients;
-  const title = g.title;
-  const event = g.events;
+  // Only include collections that have at least one photo in this gallery
+  const usedCollectionIds = new Set(sorted.map((p) => p.collection_id).filter(Boolean));
+  const collections: GalleryCollection[] = (gallery.collections ?? [])
+    .filter((c) => usedCollectionIds.has(c.id))
+    .sort((a, b) => a.sort_order - b.sort_order);
+
+  const client = gallery.clients;
+  const event = gallery.events;
 
   return (
     <ClientGallery
       token={params.token}
-      title={title ?? client?.name ?? "Tu galería"}
+      title={gallery.title ?? client?.name ?? "Tu galería"}
       eventDate={event?.date ?? null}
       photos={photos}
+      collections={collections}
+      watermarkEnabled={gallery.watermark_enabled ?? false}
+      downloadPermission={gallery.download_permission ?? "original"}
     />
   );
 }
