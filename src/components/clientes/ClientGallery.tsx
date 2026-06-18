@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import Lightbox from "@/components/Lightbox";
+import { useGalleryCart } from "./galleryCart";
+import OrderModal, { type OrderTarget } from "./OrderModal";
+import GalleryCartDrawer from "./GalleryCartDrawer";
+import { formatARS } from "@/lib/gallery-shop";
 
 export type PhotoWithUrl = {
   id: string;
@@ -21,6 +25,7 @@ export default function ClientGallery({
   collections,
   watermarkEnabled,
   downloadPermission,
+  storeEnabled = true,
 }: {
   token: string;
   title: string;
@@ -29,10 +34,15 @@ export default function ClientGallery({
   collections: GalleryCollection[];
   watermarkEnabled: boolean;
   downloadPermission: "none" | "web" | "original";
+  storeEnabled?: boolean;
 }) {
   const [lb, setLb] = useState<number | null>(null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [activeCollection, setActiveCollection] = useState<string | null>(null);
+  const [orderTarget, setOrderTarget] = useState<OrderTarget | null>(null);
+  const [cartOpen, setCartOpen] = useState(false);
+
+  const cart = useGalleryCart(token);
 
   // Track view + load favorites on mount
   useEffect(() => {
@@ -60,6 +70,14 @@ export default function ClientGallery({
       });
     },
     [token]
+  );
+
+  const openPhotoOrder = useCallback(
+    (e: React.MouseEvent, p: PhotoWithUrl) => {
+      e.stopPropagation();
+      setOrderTarget({ mode: "photo", id: p.id, thumb: p.url, name: p.original_filename });
+    },
+    []
   );
 
   const visiblePhotos =
@@ -159,6 +177,15 @@ export default function ClientGallery({
               >
                 ♥
               </button>
+              {storeEnabled && (
+                <button
+                  className="gal-buy-btn"
+                  onClick={(e) => openPhotoOrder(e, p)}
+                  aria-label="Pedir impresión de esta foto"
+                >
+                  Pedir impresión
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -173,6 +200,14 @@ export default function ClientGallery({
             )}
           </div>
           <div className="gal-bar-actions">
+            {storeEnabled && (
+              <button
+                className="btn btn-outline gal-bar-btn"
+                onClick={() => setOrderTarget({ mode: "album" })}
+              >
+                Pedir álbum de la boda
+              </button>
+            )}
             {downloadPermission !== "none" && (
               <button className="btn btn-dark gal-bar-btn" onClick={downloadAll}>
                 Descargar todo (ZIP)
@@ -188,6 +223,40 @@ export default function ClientGallery({
         onClose={() => setLb(null)}
         onNav={nav}
       />
+
+      {/* Store: order modal */}
+      {storeEnabled && orderTarget && (
+        <OrderModal
+          target={orderTarget}
+          onClose={() => setOrderTarget(null)}
+          onAdd={(product, qty, photo) => {
+            cart.add(product, qty, photo);
+            setCartOpen(true);
+          }}
+        />
+      )}
+
+      {/* Store: floating cart button */}
+      {storeEnabled && cart.totalItems > 0 && !cartOpen && (
+        <button className="gal-cart-fab" onClick={() => setCartOpen(true)}>
+          <span className="gal-cart-fab-count">{cart.totalItems}</span>
+          <span className="gal-cart-fab-label">Mi pedido</span>
+          <span className="gal-cart-fab-total">{formatARS(cart.total)}</span>
+        </button>
+      )}
+
+      {/* Store: cart drawer */}
+      {storeEnabled && cartOpen && (
+        <GalleryCartDrawer
+          token={token}
+          items={cart.items}
+          total={cart.total}
+          onClose={() => setCartOpen(false)}
+          onRemove={cart.remove}
+          onSetQty={cart.setQty}
+          onClear={cart.clear}
+        />
+      )}
     </main>
   );
 }

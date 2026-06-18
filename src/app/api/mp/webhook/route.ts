@@ -22,10 +22,26 @@ export async function POST(req: Request) {
 
   try {
     const payment = await getPayment(String(id));
-    const bookingId = payment.external_reference;
-    if (!bookingId) return NextResponse.json({ ok: true, no_ref: true });
+    const ref = payment.external_reference;
+    if (!ref) return NextResponse.json({ ok: true, no_ref: true });
 
     const svc = getServiceSupabase();
+
+    // Store orders (tienda + galería) use an "order:<id>" reference.
+    if (ref.startsWith("order:")) {
+      const orderId = ref.slice("order:".length);
+      await svc
+        .from("orders")
+        .update({
+          payment_id: String(payment.id),
+          payment_status: payment.status,
+        })
+        .eq("id", orderId);
+      return NextResponse.json({ ok: true, kind: "order" });
+    }
+
+    // Otherwise it's a reservation deposit (bookings).
+    const bookingId = ref;
     await svc
       .from("bookings")
       .update({

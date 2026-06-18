@@ -9,37 +9,59 @@ const NEXT: Record<string, string> = {
   enviado: "entregado",
 };
 
+const PAID = new Set(["paid", "approved"]);
+
 export default function PedidoActions({
   orderId,
   shippingStatus,
+  paymentStatus,
 }: {
   orderId: string;
   shippingStatus: string;
+  paymentStatus: string;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
 
-  const next = NEXT[shippingStatus];
-  if (!next) return <span className="label">Cerrado</span>;
+  const nextShip = NEXT[shippingStatus];
+  const isPaid = PAID.has(paymentStatus);
 
-  const update = async () => {
+  const patch = async (body: Record<string, string>) => {
     setBusy(true);
     const res = await fetch(`/api/admin/orders/${orderId}`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ shipping_status: next }),
+      body: JSON.stringify(body),
     });
     setBusy(false);
     if (res.ok) router.refresh();
   };
 
   return (
-    <button
-      className="btn btn-outline adm-row-btn"
-      onClick={update}
-      disabled={busy}
-    >
-      {busy ? "…" : `Marcar ${next}`}
-    </button>
+    <div className="adm-ped-actions">
+      {!isPaid ? (
+        <button
+          className="btn btn-siena adm-row-btn"
+          onClick={() => patch({ payment_status: "paid" })}
+          disabled={busy}
+        >
+          {busy ? "…" : "Marcar pagado"}
+        </button>
+      ) : (
+        <span className="adm-ped-paid">✓ Pagado</span>
+      )}
+
+      {nextShip ? (
+        <button
+          className="btn btn-outline adm-row-btn"
+          onClick={() => patch({ shipping_status: nextShip })}
+          disabled={busy}
+        >
+          {busy ? "…" : `Marcar ${nextShip}`}
+        </button>
+      ) : (
+        <span className="label adm-ped-closed">Entregado</span>
+      )}
+    </div>
   );
 }
