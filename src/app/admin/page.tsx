@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { getServerSupabase, supabaseConfigured } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/admin";
 import AdminTopbar from "@/components/admin/AdminTopbar";
+import { formatARS } from "@/lib/gallery-shop";
+import { isPaid, packageName, payLabel, formatDate } from "@/lib/crm";
 
 type GalleryRow = {
   id: string;
@@ -13,6 +15,15 @@ type GalleryRow = {
   clients: { name: string | null; email: string } | null;
   events: { date: string | null; type: string | null } | null;
   photos: { count: number }[];
+};
+
+type UpcomingEvent = {
+  id: string;
+  type: string | null;
+  date: string | null;
+  package: string | null;
+  clients: { name: string | null; email: string } | null;
+  bookings: { payment_status: string }[] | null;
 };
 
 export default async function AdminHome() {
@@ -51,18 +62,52 @@ export default async function AdminHome() {
     );
   }
 
-  const { data, error } = await supabase
-    .from("galleries")
-    .select(
-      `id, title, access_token, is_active, created_at,
-       clients ( name, email ),
-       events ( date, type ),
-       photos ( count )`,
-    )
-    .order("created_at", { ascending: false })
-    .limit(50);
+  const today = new Date().toISOString().slice(0, 10);
 
-  const galleries: GalleryRow[] = (data as unknown as GalleryRow[]) ?? [];
+  const [galRes, upRes, bookRes, ordRes, cliCntRes, galActiveRes] =
+    await Promise.all([
+      supabase
+        .from("galleries")
+        .select(
+          `id, title, access_token, is_active, created_at,
+           clients ( name, email ), events ( date, type ), photos ( count )`,
+        )
+        .order("created_at", { ascending: false })
+        .limit(50),
+      supabase
+        .from("events")
+        .select(
+          `id, type, date, package, clients ( name, email ), bookings ( payment_status )`,
+        )
+        .gte("date", today)
+        .order("date", { ascending: true })
+        .limit(6),
+      supabase.from("bookings").select("amount_deposit, payment_status"),
+      supabase.from("orders").select("total, payment_status, shipping_status"),
+      supabase.from("clients").select("id", { count: "exact", head: true }),
+      supabase
+        .from("galleries")
+        .select("id", { count: "exact", head: true })
+        .eq("is_active", true),
+    ]);
+
+  const galleries: GalleryRow[] = (galRes.data as unknown as GalleryRow[]) ?? [];
+  const upcoming: UpcomingEvent[] =
+    (upRes.data as unknown as UpcomingEvent[]) ?? [];
+
+  // Total facturado = señas pagadas + pedidos pagados.
+  let facturado = 0;
+  for (const b of (bookRes.data as { amount_deposit: number | null; payment_status: string }[]) ?? [])
+    if (isPaid(b.payment_status)) facturado += b.amount_deposit ?? 0;
+  const ordersAll =
+    (ordRes.data as { total: number | null; payment_status: string; shipping_status: string }[]) ?? [];
+  for (const o of ordersAll) if (isPaid(o.payment_status)) facturado += o.total ?? 0;
+
+  const porPreparar = ordersAll.filter(
+    (o) => isPaid(o.payment_status) && o.shipping_status !== "entregado",
+  ).length;
+  const clientesCount = cliCntRes.count ?? 0;
+  const galeriasActivas = galActiveRes.count ?? 0;
 
   return (
     <>
@@ -71,17 +116,82 @@ export default async function AdminHome() {
         <div className="wrap">
           <header className="adm-head">
             <div>
-              <div className="label">Admin · Galerías</div>
-              <h1 className="serif adm-title">Tus galerías</h1>
+              <div className="label">Admin · Inicio</div>
+              <h1 className="serif adm-title">Panel</h1>
             </div>
             <Link href="/admin/galerias/nueva" className="btn btn-dark">
               Nueva galería
             </Link>
           </header>
 
-          {error && (
+          {/* Dashboard */}
+          <div className="adm-dash">
+            <div className="adm-dash-tiles">
+              <div className="adm-dash-tile">
+                <span className="serif adm-dash-num">{formatARS(facturado)}</span>
+                <span className="label">facturado</span>
+              </div>
+              <Link href="/admin/clientes" className="adm-dash-tile adm-dash-tile-link">
+                <span className="serif adm-dash-num">{clientesCount}</span>
+                <span className="label">clientes</span>
+              </Link>
+              <div className="adm-dash-tile">
+                <span className="serif adm-dash-num">{galeriasActivas}</span>
+                <span className="label">galerías activas</span>
+              </div>
+              <Link href="/admin/pedidos" className="adm-dash-tile adm-dash-tile-link">
+                <span className="serif adm-dash-num">{porPreparar}</span>
+                <span className="label">pedidos por preparar</span>
+              </Link>
+            </div>
+
+            <div className="adm-dash-upcoming">
+              <h2 className="label adm-cli-sec-title">Próximas bodas</h2>
+              {upcoming.length === 0 ? (
+                <p className="serif-italic adm-cli-empty">
+                  No hay bodas próximas agendadas.
+                </p>
+              ) : (
+                <ul className="adm-dash-evlist">
+                  {upcoming.map((ev) => {
+                    const paid = (ev.bookings ?? []).some((b) =>
+                      isPaid(b.payment_status),
+                    );
+                    return (
+                      <li key={ev.id} className="adm-dash-ev">
+                        <div className="adm-dash-ev-date serif">
+                          {formatDate(ev.date)}
+                        </div>
+                        <div className="adm-dash-ev-body">
+                          <div className="adm-dash-ev-name">
+                            {ev.clients?.name ?? ev.clients?.email ?? "Sin cliente"}
+                          </div>
+                          <div className="label adm-dash-ev-meta">
+                            {ev.type === "boda" ? "Boda" : ev.type ?? "Evento"} ·{" "}
+                            {packageName(ev.package)}
+                          </div>
+                        </div>
+                        <span
+                          className={`adm-ped-badge pay-${paid ? "paid" : "pending"}`}
+                        >
+                          {paid ? "seña paga" : payLabel("pending")}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          {/* Galerías */}
+          <header className="adm-head adm-head-sub">
+            <h2 className="serif adm-subtitle">Galerías</h2>
+          </header>
+
+          {galRes.error && (
             <p className="cl-err">
-              No pudimos cargar las galerías: {error.message}
+              No pudimos cargar las galerías: {galRes.error.message}
             </p>
           )}
 
@@ -112,8 +222,7 @@ export default async function AdminHome() {
                           "Galería sin título"}
                       </div>
                       <div className="label adm-row-meta">
-                        {g.clients?.email} ·{" "}
-                        {count} fotos ·{" "}
+                        {g.clients?.email} · {count} fotos ·{" "}
                         {g.is_active ? "activa" : "pausada"}
                       </div>
                     </div>

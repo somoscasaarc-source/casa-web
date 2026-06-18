@@ -2893,3 +2893,187 @@ input[type="date"].adm-input { cursor: pointer; }
   .adm-ped-right { align-items: stretch; }
   .adm-ped-actions { justify-content: flex-end; }
 }
+
+/* ---------- Fase C — Studio Manager (CRM) ---------- */
+
+/* Secondary section header (below the dashboard) */
+.adm-head-sub { margin: 64px 0 28px; align-items: center; }
+.adm-subtitle { font-size: 30px; margin: 0; }
+
+/* Dashboard */
+.adm-dash { margin-bottom: 16px; }
+.adm-dash-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 40px;
+}
+.adm-dash-tile,
+.adm-cli-tile {
+  border: 1px solid var(--ceniza-line);
+  background: #fff;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.adm-dash-tile-link {
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.adm-dash-tile-link:hover {
+  border-color: var(--siena);
+  transform: translateY(-2px);
+}
+.adm-dash-num,
+.adm-cli-tile-num {
+  font-size: 32px;
+  line-height: 1;
+  color: var(--ebano);
+}
+.adm-dash-tile .label,
+.adm-cli-tile .label { color: var(--ceniza); }
+
+.adm-dash-upcoming { margin-top: 8px; }
+.adm-dash-evlist {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--ceniza-line);
+}
+.adm-dash-ev {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--ceniza-line-soft);
+}
+.adm-dash-ev-date {
+  font-size: 16px;
+  color: var(--siena);
+  width: 130px;
+  flex-shrink: 0;
+}
+.adm-dash-ev-body { flex: 1; min-width: 0; }
+.adm-dash-ev-name {
+  font-family: "DM Sans", sans-serif;
+  font-size: 15px;
+  color: var(--ebano);
+}
+.adm-dash-ev-meta { color: var(--ceniza); margin-top: 2px; }
+
+/* Clients list */
+.adm-cli-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.adm-cli-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border: 1px solid var(--ceniza-line);
+  background: #fff;
+  padding: 22px 24px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.adm-cli-card:hover { border-color: var(--siena); transform: translateY(-2px); }
+.adm-cli-name { font-size: 24px; color: var(--ebano); margin: 0 0 4px; }
+.adm-cli-contact {
+  color: var(--ceniza);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.adm-cli-stats { display: flex; gap: 28px; flex-shrink: 0; }
+.adm-cli-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.adm-cli-stat-num { font-size: 18px; color: var(--ebano); }
+.adm-cli-stat .label { color: var(--ceniza); }
+
+/* Client detail */
+.adm-cli-back {
+  display: inline-block;
+  color: var(--ceniza);
+  text-decoration: none;
+  margin-bottom: 24px;
+  transition: color 0.2s ease;
+}
+.adm-cli-back:hover { color: var(--siena); }
+.adm-cli-dhead { margin-bottom: 36px; }
+.adm-cli-since { color: var(--ceniza); margin-top: 6px; }
+.adm-cli-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 48px;
+}
+.adm-cli-section { margin-bottom: 44px; }
+.adm-cli-sec-title {
+  color: var(--ceniza);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ceniza-line);
+  margin: 0 0 18px;
+}
+.adm-cli-empty { color: var(--ceniza); font-size: 18px; }
+
+.adm-cli-evlist,
+.adm-cli-gallist,
+.adm-cli-ordlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.adm-cli-ev,
+.adm-cli-gal,
+.adm-cli-ord {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid var(--ceniza-line);
+  background: #fff;
+  padding: 18px 22px;
+}
+.adm-cli-ev-title,
+.adm-cli-gal-title,
+.adm-cli-ord-title { font-size: 19px; color: var(--ebano); margin: 0 0 3px; }
+.adm-cli-ev-meta,
+.adm-cli-gal-meta,
+.adm-cli-ord-meta {
+  color: var(--ceniza);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.adm-cli-ev-pay { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+.adm-cli-ev-amount { font-family: "DM Sans", sans-serif; font-size: 13px; color: var(--ebano); }
+.adm-cli-gal-actions { flex-shrink: 0; }
+.adm-cli-ord-badges { display: flex; gap: 8px; flex-shrink: 0; }
+.adm-cli-allorders {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--siena);
+  text-decoration: none;
+}
+.adm-cli-allorders:hover { text-decoration: underline; }
+
+@media (max-width: 760px) {
+  .adm-dash-tiles,
+  .adm-cli-summary { grid-template-columns: repeat(2, 1fr); }
+  .adm-head-sub { margin-top: 48px; }
+  .adm-cli-card { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .adm-cli-stats { gap: 20px; align-self: stretch; justify-content: space-between; }
+  .adm-cli-stat { align-items: flex-start; }
+  .adm-dash-ev { flex-wrap: wrap; gap: 8px 14px; }
+  .adm-dash-ev-date { width: auto; }
+  .adm-cli-ev, .adm-cli-gal, .adm-cli-ord { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .adm-cli-ev-pay { align-items: flex-start; }
+}

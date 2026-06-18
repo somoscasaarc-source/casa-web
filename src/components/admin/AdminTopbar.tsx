@@ -23,7 +23,10 @@ export default function AdminTopbar({ email }: { email: string }) {
       </Link>
       <nav className="adm-nav">
         <Link href="/admin" className="adm-link">
-          Galerías
+          Panel
+        </Link>
+        <Link href="/admin/clientes" className="adm-link">
+          Clientes
         </Link>
         <Link href="/admin/reservas" className="adm-link">
           Reservas
